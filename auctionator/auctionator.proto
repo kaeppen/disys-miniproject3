@@ -1,0 +1,12 @@
+syntax = "proto3";
+package auctionator; 
+option go_package = "https://github.com/kaeppen/disys-miniproject3;auctionator";
+
+service auctionator {
+    rpc bid (Empty) returns (Empty) {}
+    rpc result (Empty) returns (Empty) {}
+}
+
+message Empty {}
+
+//protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative auctionator/auctionator.proto
