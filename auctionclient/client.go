@@ -14,6 +14,7 @@ type Frontend struct {
 	//det er mig der er grpc klient
 	connection a.AuctionatorClient
 	ctx        context.Context
+	uid        int32 //unique identifier, needs to be incorporated in requests!
 }
 
 type Client struct {
