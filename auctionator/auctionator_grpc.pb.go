@@ -18,8 +18,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuctionatorClient interface {
-	Bid(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
-	Result(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
+	Bid(ctx context.Context, in *Amount, opts ...grpc.CallOption) (*Acknowledgement, error)
+	Result(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Outcome, error)
 }
 
 type auctionatorClient struct {
@@ -30,18 +30,18 @@ func NewAuctionatorClient(cc grpc.ClientConnInterface) AuctionatorClient {
 	return &auctionatorClient{cc}
 }
 
-func (c *auctionatorClient) Bid(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/auctionator.auctionator/bid", in, out, opts...)
+func (c *auctionatorClient) Bid(ctx context.Context, in *Amount, opts ...grpc.CallOption) (*Acknowledgement, error) {
+	out := new(Acknowledgement)
+	err := c.cc.Invoke(ctx, "/auctionator.auctionator/Bid", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *auctionatorClient) Result(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/auctionator.auctionator/result", in, out, opts...)
+func (c *auctionatorClient) Result(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Outcome, error) {
+	out := new(Outcome)
+	err := c.cc.Invoke(ctx, "/auctionator.auctionator/Result", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -52,8 +52,8 @@ func (c *auctionatorClient) Result(ctx context.Context, in *Empty, opts ...grpc.
 // All implementations must embed UnimplementedAuctionatorServer
 // for forward compatibility
 type AuctionatorServer interface {
-	Bid(context.Context, *Empty) (*Empty, error)
-	Result(context.Context, *Empty) (*Empty, error)
+	Bid(context.Context, *Amount) (*Acknowledgement, error)
+	Result(context.Context, *Empty) (*Outcome, error)
 	mustEmbedUnimplementedAuctionatorServer()
 }
 
@@ -61,10 +61,10 @@ type AuctionatorServer interface {
 type UnimplementedAuctionatorServer struct {
 }
 
-func (UnimplementedAuctionatorServer) Bid(context.Context, *Empty) (*Empty, error) {
+func (UnimplementedAuctionatorServer) Bid(context.Context, *Amount) (*Acknowledgement, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Bid not implemented")
 }
-func (UnimplementedAuctionatorServer) Result(context.Context, *Empty) (*Empty, error) {
+func (UnimplementedAuctionatorServer) Result(context.Context, *Empty) (*Outcome, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Result not implemented")
 }
 func (UnimplementedAuctionatorServer) mustEmbedUnimplementedAuctionatorServer() {}
@@ -81,7 +81,7 @@ func RegisterAuctionatorServer(s grpc.ServiceRegistrar, srv AuctionatorServer) {
 }
 
 func _Auctionator_Bid_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Empty)
+	in := new(Amount)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -90,10 +90,10 @@ func _Auctionator_Bid_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/auctionator.auctionator/bid",
+		FullMethod: "/auctionator.auctionator/Bid",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuctionatorServer).Bid(ctx, req.(*Empty))
+		return srv.(AuctionatorServer).Bid(ctx, req.(*Amount))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -108,7 +108,7 @@ func _Auctionator_Result_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/auctionator.auctionator/result",
+		FullMethod: "/auctionator.auctionator/Result",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuctionatorServer).Result(ctx, req.(*Empty))
@@ -124,11 +124,11 @@ var Auctionator_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*AuctionatorServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "bid",
+			MethodName: "Bid",
 			Handler:    _Auctionator_Bid_Handler,
 		},
 		{
-			MethodName: "result",
+			MethodName: "Result",
 			Handler:    _Auctionator_Result_Handler,
 		},
 	},

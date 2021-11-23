@@ -3,8 +3,23 @@ package auctionator;
 option go_package = "https://github.com/kaeppen/disys-miniproject3;auctionator";
 
 service auctionator {
-    rpc bid (Empty) returns (Empty) {}
-    rpc result (Empty) returns (Empty) {}
+    rpc Bid (Amount) returns (Acknowledgement) {}
+    rpc Result (Empty) returns (Outcome) {}
+}
+
+message Amount {
+    int32 Amount = 1; 
+    int32 ClientId = 2; 
+    //måske kræves mere info om klienten for "registrering" 
+}
+
+message Acknowledgement {
+    string Ack = 1; 
+}
+
+message Outcome {
+    int32 Result = 1;
+    bool Over = 2;  
 }
 
 message Empty {}
