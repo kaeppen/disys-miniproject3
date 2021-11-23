@@ -5,6 +5,17 @@ option go_package = "https://github.com/kaeppen/disys-miniproject3;auctionator";
 service auctionator {
     rpc Bid (Amount) returns (Acknowledgement) {}
     rpc Result (Empty) returns (Outcome) {}
+    rpc EstablishBackupConnection (ConnectionSetup) returns (stream UpdateResponse) {}
+}
+
+message ConnectionSetup {
+    string Port = 1; 
+    int32 Id = 2; 
+}
+
+message UpdateResponse {
+    int32 Key = 1; 
+    string Value = 2; 
 }
 
 message Amount {

@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 type AuctionatorClient interface {
 	Bid(ctx context.Context, in *Amount, opts ...grpc.CallOption) (*Acknowledgement, error)
 	Result(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Outcome, error)
+	EstablishBackupConnection(ctx context.Context, in *ConnectionSetup, opts ...grpc.CallOption) (Auctionator_EstablishBackupConnectionClient, error)
 }
 
 type auctionatorClient struct {
@@ -48,12 +49,45 @@ func (c *auctionatorClient) Result(ctx context.Context, in *Empty, opts ...grpc.
 	return out, nil
 }
 
+func (c *auctionatorClient) EstablishBackupConnection(ctx context.Context, in *ConnectionSetup, opts ...grpc.CallOption) (Auctionator_EstablishBackupConnectionClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Auctionator_ServiceDesc.Streams[0], "/auctionator.auctionator/EstablishBackupConnection", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &auctionatorEstablishBackupConnectionClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type Auctionator_EstablishBackupConnectionClient interface {
+	Recv() (*UpdateResponse, error)
+	grpc.ClientStream
+}
+
+type auctionatorEstablishBackupConnectionClient struct {
+	grpc.ClientStream
+}
+
+func (x *auctionatorEstablishBackupConnectionClient) Recv() (*UpdateResponse, error) {
+	m := new(UpdateResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // AuctionatorServer is the server API for Auctionator service.
 // All implementations must embed UnimplementedAuctionatorServer
 // for forward compatibility
 type AuctionatorServer interface {
 	Bid(context.Context, *Amount) (*Acknowledgement, error)
 	Result(context.Context, *Empty) (*Outcome, error)
+	EstablishBackupConnection(*ConnectionSetup, Auctionator_EstablishBackupConnectionServer) error
 	mustEmbedUnimplementedAuctionatorServer()
 }
 
@@ -66,6 +100,9 @@ func (UnimplementedAuctionatorServer) Bid(context.Context, *Amount) (*Acknowledg
 }
 func (UnimplementedAuctionatorServer) Result(context.Context, *Empty) (*Outcome, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Result not implemented")
+}
+func (UnimplementedAuctionatorServer) EstablishBackupConnection(*ConnectionSetup, Auctionator_EstablishBackupConnectionServer) error {
+	return status.Errorf(codes.Unimplemented, "method EstablishBackupConnection not implemented")
 }
 func (UnimplementedAuctionatorServer) mustEmbedUnimplementedAuctionatorServer() {}
 
@@ -116,6 +153,27 @@ func _Auctionator_Result_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Auctionator_EstablishBackupConnection_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(ConnectionSetup)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(AuctionatorServer).EstablishBackupConnection(m, &auctionatorEstablishBackupConnectionServer{stream})
+}
+
+type Auctionator_EstablishBackupConnectionServer interface {
+	Send(*UpdateResponse) error
+	grpc.ServerStream
+}
+
+type auctionatorEstablishBackupConnectionServer struct {
+	grpc.ServerStream
+}
+
+func (x *auctionatorEstablishBackupConnectionServer) Send(m *UpdateResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // Auctionator_ServiceDesc is the grpc.ServiceDesc for Auctionator service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -132,6 +190,12 @@ var Auctionator_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Auctionator_Result_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "EstablishBackupConnection",
+			Handler:       _Auctionator_EstablishBackupConnection_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "auctionator/auctionator.proto",
 }
