@@ -15,10 +15,10 @@ import (
 type Server struct {
 	a.UnimplementedAuctionatorServer
 	Id         int32
-	isPrimary  bool                          //am i primary
-	primary    a.AuctionatorServer           //who is my primary
-	backups    map[int32]Server              //the backups
-	clients    map[int32]a.AuctionatorClient //the registered clients
+	isPrimary  bool                //am i primary
+	primary    a.AuctionatorServer //who is my primary
+	backups    map[int32]Server    //the backups
+	clients    map[int32]bool      //the registered clients - only known by id (bad?) -> can be something else than a map?
 	highestBid Bid
 	isOver     bool
 	result     int32
@@ -76,9 +76,11 @@ func (s *Server) setupServer() {
 
 func (s *Server) Bid(ctx context.Context, amount *a.Amount) (*a.Acknowledgement, error) {
 	var client = amount.ClientId
-	if s.clients[client] == nil {
-		s.clients[client] = nil // nil er placeholder, hvordan lægger vi en klient ind? skal det være en stream eller en ip f.eks.? se evt. inspiration i chitty
+	_, ok := s.clients[client]
+	if !ok {
+		s.clients[client] = true //stream or port/ip instead? maybe reference to a client-struct? find inspiration somewhere
 	}
+
 	var ack = &a.Acknowledgement{}
 	if amount.Amount > s.highestBid.Bid {
 		ack.Ack = "Success"
