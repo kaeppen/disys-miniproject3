@@ -1,0 +1,16 @@
+version: "3"
+
+services: 
+    client-1: 
+        #overvej at sætte container-name -> husk at det skal indgå i portopsætning i programmet så! 
+        image: auctionator:latest
+        build: 
+            dockerfile: ./Dockerfile
+        environment: 
+            -#husk at der ikke må være mellemrum!!!!
+            
+    server-1: 
+        #overvej container-name
+        image: auctionator:latest
+        build: 
+            dockerfile: ./Dockerfile        
