@@ -32,7 +32,7 @@ type Bid struct {
 }
 
 func main() {
-	var port = ":8080" //replace with some docker stuff
+	var port = os.Getenv("PORT")
 	listen, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("Failed to listen on port %v", err)
