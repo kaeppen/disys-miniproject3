@@ -5,7 +5,7 @@ services:
         #overvej at sætte container-name -> husk at det skal indgå i portopsætning i programmet så! 
         image: auctionator:latest
         build: 
-            dockerfile: ./Dockerfile
+            dockerfile: ./auctionclient/Dockerfile
         environment: 
             -#husk at der ikke må være mellemrum!!!!
             
@@ -13,4 +13,4 @@ services:
         #overvej container-name
         image: auctionator:latest
         build: 
-            dockerfile: ./Dockerfile        
+            dockerfile: ./auctionserver/Dockerfile        
