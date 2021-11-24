@@ -15,7 +15,7 @@ services:
         build: 
             dockerfile: ./auctionserver/Dockerfile    
         environment: 
-            - PORT=":8080"
+            - PORT="8080"
             - ID=1
             - ISPRIMARY="TRUE"       
     server-2: 
@@ -24,7 +24,7 @@ services:
         build: 
             dockerfile: ./auctionserver/Dockerfile    
         environment: 
-            - PORT=":8081"
+            - PORT="8081"
             - ID=2
             - ISPRIMARY="FALSE"
             - PRIMARY="server-1:8080"           
