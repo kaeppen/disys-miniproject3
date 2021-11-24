@@ -2,16 +2,16 @@ version: "3"
 
 services: 
     client-1: 
-        #overvej at sætte container-name -> husk at det skal indgå i portopsætning i programmet så! 
-        image: auctionator:latest
+        container_name: "client-1"
+        #image: auctionator:latest
         build: 
             dockerfile: ./auctionclient/Dockerfile
         environment: 
             - ID=0
             - PORT="server-1:8080"
     server-1: 
-        #overvej container-name
-        image: auctionator:latest
+        container_name: "server-1"
+        #image: auctionator:latest
         build: 
             dockerfile: ./auctionserver/Dockerfile    
         environment: 
@@ -19,8 +19,8 @@ services:
             - ID=1
             - ISPRIMARY="TRUE"       
     server-2: 
-        #overvej container-name
-        image: auctionator:latest
+        container_name: "server-2"
+        #image: auctionator:latest
         build: 
             dockerfile: ./auctionserver/Dockerfile    
         environment: 

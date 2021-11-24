@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"net"
@@ -33,6 +34,7 @@ type Bid struct {
 
 func main() {
 	var port = os.Getenv("PORT")
+	fmt.Println(port)
 	listen, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("Failed to listen on port %v", err)
