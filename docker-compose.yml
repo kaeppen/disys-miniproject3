@@ -7,26 +7,24 @@ services:
         build: 
             dockerfile: ./auctionclient/Dockerfile
         environment: 
-            #-husk at der ikke må være mellemrum!!!!
-            -ID=0
-            -PORT="server-1:8080"
-            
+            - ID=0
+            - PORT="server-1:8080"
     server-1: 
         #overvej container-name
         image: auctionator:latest
         build: 
             dockerfile: ./auctionserver/Dockerfile    
         environment: 
-            -PORT=":8080"
-            -ID=1
-            -ISPRIMARY="TRUE"       
+            - PORT=":8080"
+            - ID=1
+            - ISPRIMARY="TRUE"       
     server-2: 
         #overvej container-name
         image: auctionator:latest
         build: 
             dockerfile: ./auctionserver/Dockerfile    
         environment: 
-            -PORT=":8081"
-            -ID=2
-            -ISPRIMARY="FALSE"
-            -PRIMARY="server-1:8080"           
+            - PORT=":8081"
+            - ID=2
+            - ISPRIMARY="FALSE"
+            - PRIMARY="server-1:8080"           
