@@ -18,7 +18,7 @@ type Server struct {
 	Id         int32
 	isPrimary  bool                                                    //am i primary
 	primary    a.AuctionatorServer                                     //who is my primary
-	backups    map[int32]a.Auctionator_EstablishBackupConnectionServer //the backups
+	backups    map[int32]a.Auctionator_EstablishBackupConnectionServer //connection to backups
 	clients    map[int32]bool                                          //the registered clients - only known by id (bad?) -> can be something else than a map?
 	highestBid Bid
 	isOver     bool
@@ -102,6 +102,20 @@ func (s *Server) connectToPrimary(port string) {
 			s.updateResponses(in)
 		}
 	}()
+}
+
+func (s *Server) EstablishBackupConnection(setup *a.ConnectionSetup, stream a.Auctionator_EstablishBackupConnectionServer) error {
+	//store the stream to the backup
+	id := setup.Id
+	s.backups[id] = stream
+
+	//keep the stream alive
+	for {
+		select {
+		case <-stream.Context().Done():
+			return nil
+		}
+	}
 }
 
 func (s *Server) updateResponses(response *a.UpdateResponse) {
