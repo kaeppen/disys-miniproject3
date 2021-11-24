@@ -36,7 +36,7 @@ func main() {
 	log.Println(port)
 	listen, err := net.Listen("tcp", port)
 	if err != nil {
-		log.Fatalf("Failed to listen on port %v", err)
+		log.Fatalf("Failed to listen on port %v", listen.Addr())
 	}
 	grpcServer := grpc.NewServer()
 	server := Server{}
