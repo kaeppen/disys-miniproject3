@@ -36,7 +36,10 @@ func main() {
 
 func (c *Client) Hello() {
 	for i := range c.front.servers {
-		c.front.servers[i].HelloWorld(c.front.ctx, &a.Empty{})
+		_, err := c.front.servers[i].HelloWorld(c.front.ctx, &a.Empty{})
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 
