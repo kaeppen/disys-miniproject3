@@ -39,6 +39,8 @@ func (c *Client) Hello() {
 		_, err := c.front.servers[i].HelloWorld(c.front.ctx, &a.Empty{})
 		if err != nil {
 			log.Fatal(err)
+			log.Printf("Error when attempting to reach server %v - removing", i)
+			delete(c.front.servers, i) //delete the server fom the map
 		}
 	}
 }
@@ -50,6 +52,8 @@ func (c *Client) Bid(amount int32) {
 		ack, err := c.front.servers[i].Bid(c.front.ctx, input)
 		if err != nil {
 			log.Fatal(err)
+			log.Printf("Error when attempting to reach server %v - removing", i)
+			delete(c.front.servers, i) //delete the server fom the map
 		}
 		log.Printf("Client %v got response %v from server %v", c.Id, ack.Ack, i)
 	}
@@ -60,6 +64,8 @@ func (c *Client) Result() {
 		outcome, err := c.front.servers[i].Result(c.front.ctx, &a.Empty{})
 		if err != nil {
 			log.Fatal(err)
+			log.Printf("Error when attempting to reach server %v - removing", i)
+			delete(c.front.servers, i) //delete the server fom the map
 		}
 		log.Printf("Client %v: auction is over: %v and the highest bidder/result is: %v", c.Id, outcome.Over, outcome.Result)
 	}
