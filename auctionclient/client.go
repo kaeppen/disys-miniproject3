@@ -77,7 +77,6 @@ func (c *Client) setupFrontend() {
 		if err != nil {
 			log.Fatalf("Could not connect: %s", err)
 		}
-		defer conn.Close()
 		client := a.NewAuctionatorClient(conn)
 		c.front.servers[i] = client
 	}
