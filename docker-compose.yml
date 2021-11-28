@@ -11,6 +11,7 @@ services:
             - NUMSERVERS=2
             - SERVER0=server-0:8080
             - SERVER1=server-1:8081
+            - SERVER2=server-2:8082
     server-0: 
         container_name: "server-0"
         #image: auctionator:latest
@@ -26,4 +27,12 @@ services:
             dockerfile: ./auctionserver/Dockerfile    
         environment: 
             - PORT=8081
-            - ID=1      
+            - ID=1  
+    server-2: 
+        container_name: "server-2"
+        #image: auctionator:latest
+        build: 
+            dockerfile: ./auctionserver/Dockerfile    
+        environment: 
+            - PORT=8082
+            - ID=2              
