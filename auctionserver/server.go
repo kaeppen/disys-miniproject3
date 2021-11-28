@@ -41,14 +41,16 @@ func main() {
 	//set up the server
 	server.setupServer()
 
+	if server.Id == 1 {
+		os.Exit(0)
+	}
+
 	//start listening
 	auctionator.RegisterAuctionatorServer(grpcServer, &server)
 	if err := grpcServer.Serve(listen); err != nil {
 		log.Fatalf("Failed to serve %v", err)
 	}
-	if server.Id == 1 {
-		os.Exit(0)
-	}
+
 }
 
 func (s *Server) setupServer() {
