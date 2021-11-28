@@ -10,7 +10,7 @@ services:
             - ID=0
             - NUMSERVERS=2
             - SERVER0=server-0:8080
-            - SERVER1=server-1:8080
+            - SERVER1=server-1:8081
     server-0: 
         container_name: "server-0"
         #image: auctionator:latest
