@@ -8,7 +8,7 @@ services:
             dockerfile: ./auctionclient/Dockerfile
         environment: 
             - ID=0
-            - PORT="server-1:8080"
+            - PORT=server-1:8080
     server-1: 
         container_name: "server-1"
         #image: auctionator:latest
