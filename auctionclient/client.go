@@ -50,8 +50,8 @@ func (c *Client) Result() {
 
 func (c *Client) setupFrontend() {
 	var conn *grpc.ClientConn
-	log.Print("Trying to connect to server")
 	var port = os.Getenv("PORT")
+	log.Printf("Trying to connect to server on port %v", port)
 	conn, err := grpc.Dial(port, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("Could not connect: %s", err)
