@@ -6,7 +6,9 @@ service auctionator {
     rpc Bid (Amount) returns (Acknowledgement) {}
     rpc Result (Empty) returns (Outcome) {}
     rpc EstablishBackupConnection (ConnectionSetup) returns (stream UpdateResponse) {}
+    rpc HelloWorld (Empty) returns (Empty) {}
 }
+
 
 message ConnectionSetup {
     string Port = 1; 
