@@ -32,6 +32,12 @@ func main() {
 
 }
 
+func (c *Client) Hello() {
+	for i := range c.front.servers {
+		c.front.servers[i].HelloWorld(c.front.ctx, &a.Empty{})
+	}
+}
+
 //overvej om der skal returværdi på denne?
 func (c *Client) Bid(amount int32) {
 	for i := range c.front.servers {

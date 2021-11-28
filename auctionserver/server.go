@@ -55,6 +55,12 @@ func (s *Server) setupServer() {
 	s.Id = int32(id)
 }
 
+func (s *Server) HelloWorld(context.Context, *a.Empty) (*a.Empty, error) {
+	log.Printf("Helloworld kaldt på server %v", s.Id)
+
+	return nil, nil
+}
+
 func (s *Server) connectToPrimary(port string) {
 	conn, err := grpc.Dial(port, grpc.WithBlock(), grpc.WithInsecure())
 	if err != nil {
