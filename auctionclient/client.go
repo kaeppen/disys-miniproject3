@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 
 	a "github.com/kaeppen/disys-miniproject3/auctionator"
 	"google.golang.org/grpc"
@@ -29,9 +30,8 @@ func main() {
 	c.Id = int32(id)
 	c.setupFrontend()
 	log.Print("Client has managed to set up frontend, nice")
+	time.Sleep(5 * time.Second)
 	c.Hello()
-	c.Bid(500)
-
 }
 
 func (c *Client) Hello() {
