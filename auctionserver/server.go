@@ -17,10 +17,7 @@ import (
 type Server struct {
 	a.UnimplementedAuctionatorServer
 	Id         int32
-	isPrimary  bool                                                    //am i primary
-	primary    a.AuctionatorServer                                     //who is my primary
-	backups    map[int32]a.Auctionator_EstablishBackupConnectionServer //connection to backups
-	clients    map[int32]bool                                          //the registered clients - only known by id (bad?) -> can be something else than a map?
+	clients    map[int32]bool //the registered clients - only known by id (bad?) -> can be something else than a map?
 	highestBid Bid
 	isOver     bool
 	result     int32
@@ -52,30 +49,10 @@ func main() {
 
 }
 
-// func (s *Server) notifyBackups() {
-// 	//loop over all my backups and update their maps to mine
-// 	for i := range s.backups {
-// 		//no need to clear out the map first, as it will only hold stuff that the primary also holds
-// 		for k, v := range s.responses {
-// 			s.backups[i].responses[k] = v
-// 		}
-// 	}
-// }
-
 func (s *Server) setupServer() {
-	s.backups = make(map[int32]a.Auctionator_EstablishBackupConnectionServer)
 	//set the servers id from environment variable
 	id, _ := strconv.Atoi(os.Getenv("ID"))
 	s.Id = int32(id)
-	//tell the server if it is primary replica manager
-	isPrimary := os.Getenv("ISPRIMARY")
-	if isPrimary != "FALSE" {
-		s.isPrimary = true
-	} else {
-		primary := os.Getenv("PRIMARY")
-		s.connectToPrimary(primary) //der skal måske laves lidt formattering her
-		//s.primary = nil //nil er pladsholder, vi skal sætte primary på ene eller anden måde :) måske kan den få en adresse/port ind denne vej
-	}
 }
 
 func (s *Server) connectToPrimary(port string) {
@@ -104,20 +81,6 @@ func (s *Server) connectToPrimary(port string) {
 			s.updateResponses(in)
 		}
 	}()
-}
-
-func (s *Server) EstablishBackupConnection(setup *a.ConnectionSetup, stream a.Auctionator_EstablishBackupConnectionServer) error {
-	//store the stream to the backup
-	id := setup.Id
-	s.backups[id] = stream
-
-	//keep the stream alive
-	for {
-		select {
-		case <-stream.Context().Done():
-			return nil
-		}
-	}
 }
 
 func (s *Server) updateResponses(response *a.UpdateResponse) {

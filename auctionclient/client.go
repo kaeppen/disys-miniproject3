@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -12,9 +13,9 @@ import (
 
 type Frontend struct {
 	//det er mig der er grpc klient
-	connection a.AuctionatorClient
-	ctx        context.Context
-	uid        int32 //unique identifier, needs to be incorporated in requests!
+	ctx     context.Context
+	uid     int32 //unique identifier, needs to be incorporated in requests!
+	servers map[int]a.AuctionatorClient
 }
 
 type Client struct {
@@ -33,33 +34,42 @@ func main() {
 
 //overvej om der skal returværdi på denne?
 func (c *Client) Bid(amount int32) {
-	input := &a.Amount{Amount: amount, ClientId: c.Id}
-	ack, err := c.front.connection.Bid(c.front.ctx, input)
-	if err != nil {
-		log.Fatal(err)
+	for i := range c.front.servers {
+		input := &a.Amount{Amount: amount, ClientId: c.Id}
+		ack, err := c.front.servers[i].Bid(c.front.ctx, input)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Printf("Client %v got response %v from server %v", c.Id, ack.Ack, i)
 	}
-	log.Printf("Client %v got response %v", c.Id, ack.Ack)
 }
 
 func (c *Client) Result() {
-	outcome, err := c.front.connection.Result(c.front.ctx, &a.Empty{})
-	if err != nil {
-		log.Fatal(err)
+	for i := range c.front.servers {
+		outcome, err := c.front.servers[i].Result(c.front.ctx, &a.Empty{})
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Printf("Client %v: auction is over: %v and the highest bidder/result is: %v", c.Id, outcome.Over, outcome.Result)
 	}
-	log.Printf("Client %v: auction is over: %v and the highest bidder/result is: %v", c.Id, outcome.Over, outcome.Result)
 }
 
 func (c *Client) setupFrontend() {
-	var conn *grpc.ClientConn
-	var port = os.Getenv("PORT")
-	log.Printf("Trying to connect to server on port %v", port)
-	conn, err := grpc.Dial(port, grpc.WithInsecure(), grpc.WithBlock())
-	if err != nil {
-		log.Fatalf("Could not connect: %s", err)
+	num, _ := strconv.Atoi(os.Getenv("NUMSERVERS"))
+	var numservers = int(num)
+	c.front.servers = make(map[int]a.AuctionatorClient)
+	for i := 0; i < numservers; i++ {
+		var conn *grpc.ClientConn
+		var port = os.Getenv(fmt.Sprintf("SERVER%v", i))
+		log.Printf("Trying to connect to server on port %v", port)
+		conn, err := grpc.Dial(port, grpc.WithInsecure(), grpc.WithBlock())
+		if err != nil {
+			log.Fatalf("Could not connect: %s", err)
+		}
+		defer conn.Close()
+		client := a.NewAuctionatorClient(conn)
+		c.front.servers[i] = client
 	}
-	defer conn.Close()
 	ctx := context.Background()
-	client := a.NewAuctionatorClient(conn)
-	c.front.connection = client
 	c.front.ctx = ctx
 }

@@ -8,23 +8,22 @@ services:
             dockerfile: ./auctionclient/Dockerfile
         environment: 
             - ID=0
-            - PORT=server-1:8080
+            - NUMSERVERS=2
+            - SERVER0=server-0:8080
+            - SERVER1=server-1:8080
+    server-0: 
+        container_name: "server-0"
+        #image: auctionator:latest
+        build: 
+            dockerfile: ./auctionserver/Dockerfile    
+        environment: 
+            - PORT=8080
+            - ID=0  
     server-1: 
         container_name: "server-1"
         #image: auctionator:latest
         build: 
             dockerfile: ./auctionserver/Dockerfile    
         environment: 
-            - PORT=8080
-            - ID=1
-            - ISPRIMARY="TRUE"       
-    server-2: 
-        container_name: "server-2"
-        #image: auctionator:latest
-        build: 
-            dockerfile: ./auctionserver/Dockerfile    
-        environment: 
             - PORT=8081
-            - ID=2
-            - ISPRIMARY="FALSE"
-            - PRIMARY="server-1:8080"           
+            - ID=1      
