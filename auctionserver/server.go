@@ -57,7 +57,7 @@ func (s *Server) setupServer() {
 func (s *Server) HelloWorld(context.Context, *a.Empty) (*a.Empty, error) {
 	log.Printf("Helloworld kaldt på server %v", s.Id)
 
-	return nil, nil
+	return &a.Empty{}, nil
 }
 
 func (s *Server) connectToPrimary(port string) {
