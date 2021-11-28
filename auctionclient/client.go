@@ -13,10 +13,9 @@ import (
 
 type Frontend struct {
 	//det er mig der er grpc klient
-	connection a.AuctionatorClient
-	ctx        context.Context
-	uid        int32 //unique identifier, needs to be incorporated in requests!
-	servers    map[int]a.AuctionatorClient
+	ctx     context.Context
+	uid     int32 //unique identifier, needs to be incorporated in requests!
+	servers map[int]a.AuctionatorClient
 }
 
 type Client struct {
@@ -35,20 +34,24 @@ func main() {
 
 //overvej om der skal returværdi på denne?
 func (c *Client) Bid(amount int32) {
-	input := &a.Amount{Amount: amount, ClientId: c.Id}
-	ack, err := c.front.connection.Bid(c.front.ctx, input)
-	if err != nil {
-		log.Fatal(err)
+	for i := range c.front.servers {
+		input := &a.Amount{Amount: amount, ClientId: c.Id}
+		ack, err := c.front.servers[i].Bid(c.front.ctx, input)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Printf("Client %v got response %v from server %v", c.Id, ack.Ack, i)
 	}
-	log.Printf("Client %v got response %v", c.Id, ack.Ack)
 }
 
 func (c *Client) Result() {
-	outcome, err := c.front.connection.Result(c.front.ctx, &a.Empty{})
-	if err != nil {
-		log.Fatal(err)
+	for i := range c.front.servers {
+		outcome, err := c.front.servers[i].Result(c.front.ctx, &a.Empty{})
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Printf("Client %v: auction is over: %v and the highest bidder/result is: %v", c.Id, outcome.Over, outcome.Result)
 	}
-	log.Printf("Client %v: auction is over: %v and the highest bidder/result is: %v", c.Id, outcome.Over, outcome.Result)
 }
 
 func (c *Client) setupFrontend() {
