@@ -27,6 +27,7 @@ func main() {
 	id, _ := strconv.Atoi(os.Getenv("ID"))
 	c.Id = int32(id)
 	c.setupFrontend()
+	log.Print("Client has managed to set up frontend, nice")
 
 }
 
