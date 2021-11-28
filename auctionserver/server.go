@@ -47,6 +47,10 @@ func main() {
 		log.Fatalf("Failed to serve %v", err)
 	}
 
+	for {
+
+	}
+
 }
 
 func (s *Server) setupServer() {
