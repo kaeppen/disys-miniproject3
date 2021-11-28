@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -15,6 +16,7 @@ type Frontend struct {
 	connection a.AuctionatorClient
 	ctx        context.Context
 	uid        int32 //unique identifier, needs to be incorporated in requests!
+	servers    map[int]a.AuctionatorClient
 }
 
 type Client struct {
@@ -50,16 +52,21 @@ func (c *Client) Result() {
 }
 
 func (c *Client) setupFrontend() {
-	var conn *grpc.ClientConn
-	var port = os.Getenv("PORT")
-	log.Printf("Trying to connect to server on port %v", port)
-	conn, err := grpc.Dial(port, grpc.WithInsecure(), grpc.WithBlock())
-	if err != nil {
-		log.Fatalf("Could not connect: %s", err)
+	num, _ := strconv.Atoi(os.Getenv("NUMSERVERS"))
+	var numservers = int(num)
+	c.front.servers = make(map[int]a.AuctionatorClient)
+	for i := 0; i < numservers; i++ {
+		var conn *grpc.ClientConn
+		var port = os.Getenv(fmt.Sprintf("SERVER%v", i))
+		log.Printf("Trying to connect to server on port %v", port)
+		conn, err := grpc.Dial(port, grpc.WithInsecure(), grpc.WithBlock())
+		if err != nil {
+			log.Fatalf("Could not connect: %s", err)
+		}
+		defer conn.Close()
+		client := a.NewAuctionatorClient(conn)
+		c.front.servers[i] = client
 	}
-	defer conn.Close()
 	ctx := context.Background()
-	client := a.NewAuctionatorClient(conn)
-	c.front.connection = client
 	c.front.ctx = ctx
 }
