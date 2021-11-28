@@ -30,6 +30,7 @@ func main() {
 	c.setupFrontend()
 	log.Print("Client has managed to set up frontend, nice")
 	c.Hello()
+	c.Bid(500)
 
 }
 
