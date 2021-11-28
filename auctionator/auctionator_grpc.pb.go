@@ -21,6 +21,7 @@ type AuctionatorClient interface {
 	Bid(ctx context.Context, in *Amount, opts ...grpc.CallOption) (*Acknowledgement, error)
 	Result(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Outcome, error)
 	EstablishBackupConnection(ctx context.Context, in *ConnectionSetup, opts ...grpc.CallOption) (Auctionator_EstablishBackupConnectionClient, error)
+	HelloWorld(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type auctionatorClient struct {
@@ -81,6 +82,15 @@ func (x *auctionatorEstablishBackupConnectionClient) Recv() (*UpdateResponse, er
 	return m, nil
 }
 
+func (c *auctionatorClient) HelloWorld(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/auctionator.auctionator/HelloWorld", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuctionatorServer is the server API for Auctionator service.
 // All implementations must embed UnimplementedAuctionatorServer
 // for forward compatibility
@@ -88,6 +98,7 @@ type AuctionatorServer interface {
 	Bid(context.Context, *Amount) (*Acknowledgement, error)
 	Result(context.Context, *Empty) (*Outcome, error)
 	EstablishBackupConnection(*ConnectionSetup, Auctionator_EstablishBackupConnectionServer) error
+	HelloWorld(context.Context, *Empty) (*Empty, error)
 	mustEmbedUnimplementedAuctionatorServer()
 }
 
@@ -103,6 +114,9 @@ func (UnimplementedAuctionatorServer) Result(context.Context, *Empty) (*Outcome,
 }
 func (UnimplementedAuctionatorServer) EstablishBackupConnection(*ConnectionSetup, Auctionator_EstablishBackupConnectionServer) error {
 	return status.Errorf(codes.Unimplemented, "method EstablishBackupConnection not implemented")
+}
+func (UnimplementedAuctionatorServer) HelloWorld(context.Context, *Empty) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HelloWorld not implemented")
 }
 func (UnimplementedAuctionatorServer) mustEmbedUnimplementedAuctionatorServer() {}
 
@@ -174,6 +188,24 @@ func (x *auctionatorEstablishBackupConnectionServer) Send(m *UpdateResponse) err
 	return x.ServerStream.SendMsg(m)
 }
 
+func _Auctionator_HelloWorld_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuctionatorServer).HelloWorld(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/auctionator.auctionator/HelloWorld",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuctionatorServer).HelloWorld(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Auctionator_ServiceDesc is the grpc.ServiceDesc for Auctionator service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -188,6 +220,10 @@ var Auctionator_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Result",
 			Handler:    _Auctionator_Result_Handler,
+		},
+		{
+			MethodName: "HelloWorld",
+			Handler:    _Auctionator_HelloWorld_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
