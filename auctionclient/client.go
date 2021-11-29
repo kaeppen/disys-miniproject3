@@ -44,10 +44,11 @@ func (c *Client) Demo() {
 		c.Bid(250)
 		time.Sleep(2 * time.Second)
 		c.Bid(900)
+		c.Result()
 	} else {
+		c.Result()
 		c.Bid(100)
 		time.Sleep(2 * time.Second)
-		c.Result()
 		time.Sleep(2 * time.Second)
 		c.Bid(1500)
 		time.Sleep(2 * time.Second)
@@ -71,7 +72,7 @@ func (c *Client) Bid(amount int32) {
 		input := &a.Amount{Amount: amount, ClientId: c.Id, Uid: c.front.uid}
 		ack, err := c.front.servers[i].Bid(c.front.ctx, input)
 		if err != nil {
-			log.Print(err)
+			//log.Print(err)
 			log.Printf("Error when attempting to reach server %v - removing", i)
 			delete(c.front.servers, i) //delete the server fom the map
 		} else {
@@ -85,7 +86,7 @@ func (c *Client) Result() {
 	for i := range c.front.servers {
 		outcome, err := c.front.servers[i].Result(c.front.ctx, &a.Uid{Uid: c.front.uid})
 		if err != nil {
-			log.Print(err)
+			//log.Print(err)
 			log.Printf("Error when attempting to reach server %v - removing", i)
 			delete(c.front.servers, i) //delete the server fom the map
 		}
