@@ -45,7 +45,6 @@ func (c *Client) Hello() {
 	}
 }
 
-//overvej om der skal returværdi på denne?
 func (c *Client) Bid(amount int32) {
 	c.front.uid++ //update the unique identifier
 	for i := range c.front.servers {
