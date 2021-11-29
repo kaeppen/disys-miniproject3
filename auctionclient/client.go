@@ -89,8 +89,9 @@ func (c *Client) Result() {
 			//log.Print(err)
 			log.Printf("Error when attempting to reach server %v - removing", i)
 			delete(c.front.servers, i) //delete the server fom the map
+		} else {
+			log.Printf("Client %v: auction is over: %v and the highest bidder/result is: %v", c.Id, outcome.Over, outcome.Result)
 		}
-		log.Printf("Client %v: auction is over: %v and the highest bidder/result is: %v", c.Id, outcome.Over, outcome.Result)
 	}
 }
 
