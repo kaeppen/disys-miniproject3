@@ -47,6 +47,7 @@ func main() {
 	}
 
 	if server.Id == 1 {
+		log.Printf("server %v lukker nu", server.Id)
 		os.Exit(0)
 	}
 
