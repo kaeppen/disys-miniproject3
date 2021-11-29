@@ -81,7 +81,7 @@ func (s *Server) Bid(ctx context.Context, amount *a.Amount) (*a.Acknowledgement,
 	return ack, nil
 }
 
-func (s *Server) Result(ctx context.Context, void *a.Empty) (*a.Outcome, error) {
+func (s *Server) Result(ctx context.Context, uid *a.Uid) (*a.Outcome, error) {
 	var outcome = &a.Outcome{}
 	if s.isOver {
 		outcome.Over = true
