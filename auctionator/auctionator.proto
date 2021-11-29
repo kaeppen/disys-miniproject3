@@ -4,7 +4,7 @@ option go_package = "https://github.com/kaeppen/disys-miniproject3;auctionator";
 
 service auctionator {
     rpc Bid (Amount) returns (Acknowledgement) {}
-    rpc Result (Empty) returns (Outcome) {}
+    rpc Result (Uid) returns (Outcome) {}
     rpc EstablishBackupConnection (ConnectionSetup) returns (stream UpdateResponse) {}
     rpc HelloWorld (Empty) returns (Empty) {}
 }
@@ -22,8 +22,13 @@ message UpdateResponse {
 
 message Amount {
     int32 Amount = 1; 
-    int32 ClientId = 2; 
+    int32 ClientId = 2;
+    int32 Uid = 3;  
     //måske kræves mere info om klienten for "registrering" 
+}
+
+message Uid {
+    int32 Uid = 1;
 }
 
 message Acknowledgement {

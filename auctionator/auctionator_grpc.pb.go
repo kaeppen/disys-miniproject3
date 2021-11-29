@@ -19,7 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuctionatorClient interface {
 	Bid(ctx context.Context, in *Amount, opts ...grpc.CallOption) (*Acknowledgement, error)
-	Result(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Outcome, error)
+	Result(ctx context.Context, in *Uid, opts ...grpc.CallOption) (*Outcome, error)
 	EstablishBackupConnection(ctx context.Context, in *ConnectionSetup, opts ...grpc.CallOption) (Auctionator_EstablishBackupConnectionClient, error)
 	HelloWorld(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
 }
@@ -41,7 +41,7 @@ func (c *auctionatorClient) Bid(ctx context.Context, in *Amount, opts ...grpc.Ca
 	return out, nil
 }
 
-func (c *auctionatorClient) Result(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Outcome, error) {
+func (c *auctionatorClient) Result(ctx context.Context, in *Uid, opts ...grpc.CallOption) (*Outcome, error) {
 	out := new(Outcome)
 	err := c.cc.Invoke(ctx, "/auctionator.auctionator/Result", in, out, opts...)
 	if err != nil {
@@ -96,7 +96,7 @@ func (c *auctionatorClient) HelloWorld(ctx context.Context, in *Empty, opts ...g
 // for forward compatibility
 type AuctionatorServer interface {
 	Bid(context.Context, *Amount) (*Acknowledgement, error)
-	Result(context.Context, *Empty) (*Outcome, error)
+	Result(context.Context, *Uid) (*Outcome, error)
 	EstablishBackupConnection(*ConnectionSetup, Auctionator_EstablishBackupConnectionServer) error
 	HelloWorld(context.Context, *Empty) (*Empty, error)
 	mustEmbedUnimplementedAuctionatorServer()
@@ -109,7 +109,7 @@ type UnimplementedAuctionatorServer struct {
 func (UnimplementedAuctionatorServer) Bid(context.Context, *Amount) (*Acknowledgement, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Bid not implemented")
 }
-func (UnimplementedAuctionatorServer) Result(context.Context, *Empty) (*Outcome, error) {
+func (UnimplementedAuctionatorServer) Result(context.Context, *Uid) (*Outcome, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Result not implemented")
 }
 func (UnimplementedAuctionatorServer) EstablishBackupConnection(*ConnectionSetup, Auctionator_EstablishBackupConnectionServer) error {
@@ -150,7 +150,7 @@ func _Auctionator_Bid_Handler(srv interface{}, ctx context.Context, dec func(int
 }
 
 func _Auctionator_Result_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Empty)
+	in := new(Uid)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -162,7 +162,7 @@ func _Auctionator_Result_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/auctionator.auctionator/Result",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuctionatorServer).Result(ctx, req.(*Empty))
+		return srv.(AuctionatorServer).Result(ctx, req.(*Uid))
 	}
 	return interceptor(ctx, in, info, handler)
 }
