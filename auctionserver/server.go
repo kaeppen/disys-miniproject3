@@ -45,6 +45,7 @@ func main() {
 		go server.Kill()
 	}
 
+	go server.RunAuction()
 	//start listening
 	auctionator.RegisterAuctionatorServer(grpcServer, &server)
 	if err := grpcServer.Serve(listen); err != nil {
