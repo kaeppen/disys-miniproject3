@@ -26,7 +26,7 @@ type Server struct {
 
 type Bid struct {
 	ClientId int32
-	Bid      int32
+	Amount   int32
 }
 
 func main() {
@@ -58,6 +58,14 @@ func (s *Server) Kill() {
 	os.Exit(0)
 }
 
+func (s *Server) RunAuction() {
+	time.Sleep(30 * time.Second)
+	s.isOver = true
+	log.Printf("The auction is over!")
+	log.Printf("--------------------")
+	log.Printf("The winner is client: %v with a bid of %v", s.highestBid.ClientId, s.highestBid.Amount)
+}
+
 func (s *Server) setupServer() {
 	//set the servers id from environment variable
 	id, _ := strconv.Atoi(os.Getenv("ID"))
@@ -80,8 +88,10 @@ func (s *Server) Bid(ctx context.Context, amount *a.Amount) (*a.Acknowledgement,
 	}
 
 	var ack = &a.Acknowledgement{}
-	if amount.Amount > s.highestBid.Bid {
+	if amount.Amount > s.highestBid.Amount && !s.isOver {
 		ack.Ack = "Success"
+		s.highestBid.Amount = amount.Amount
+		s.highestBid.ClientId = amount.ClientId
 	} else {
 		ack.Ack = "Fail"
 	}
@@ -100,7 +110,7 @@ func (s *Server) Result(ctx context.Context, uid *a.Uid) (*a.Outcome, error) {
 		outcome.Result = s.result
 	} else {
 		outcome.Over = false
-		outcome.Result = s.highestBid.Bid
+		outcome.Result = s.highestBid.Amount
 	}
 
 	//store the response
