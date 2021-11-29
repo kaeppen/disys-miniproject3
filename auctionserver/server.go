@@ -56,6 +56,8 @@ func (s *Server) setupServer() {
 	//set the servers id from environment variable
 	id, _ := strconv.Atoi(os.Getenv("ID"))
 	s.Id = int32(id)
+	s.responses = make(map[int32]string)
+	s.clients = make(map[int32]bool)
 }
 
 func (s *Server) HelloWorld(context.Context, *a.Empty) (*a.Empty, error) {
@@ -78,6 +80,10 @@ func (s *Server) Bid(ctx context.Context, amount *a.Amount) (*a.Acknowledgement,
 		ack.Ack = "Fail"
 	}
 	//what about exception case? (as noted in the requirements)
+
+	//store the response
+	s.responses[amount.Uid] = ack.Ack
+
 	return ack, nil
 }
 
@@ -90,6 +96,9 @@ func (s *Server) Result(ctx context.Context, uid *a.Uid) (*a.Outcome, error) {
 		outcome.Over = false
 		outcome.Result = s.highestBid.Bid
 	}
+
+	//store the response
+	s.responses[uid.Uid] = fmt.Sprintf("%v %v", outcome.Over, outcome.Result)
 
 	return outcome, nil
 }
