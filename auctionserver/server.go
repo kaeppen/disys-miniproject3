@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"io"
 	"log"
 	"net"
 	"os"
@@ -63,38 +62,6 @@ func (s *Server) HelloWorld(context.Context, *a.Empty) (*a.Empty, error) {
 	log.Printf("Helloworld kaldt på server %v", s.Id)
 
 	return &a.Empty{}, nil
-}
-
-func (s *Server) connectToPrimary(port string) {
-	conn, err := grpc.Dial(port, grpc.WithBlock(), grpc.WithInsecure())
-	if err != nil {
-		log.Fatalf("Could not connect %s", err)
-	}
-	ctx := context.Background()
-	defer conn.Close()
-	primary := a.NewAuctionatorClient(conn)
-	setup := &a.ConnectionSetup{Port: "skal fjernes, da det jo ikke er nødvendigt", Id: s.Id}
-	stream, err := primary.EstablishBackupConnection(ctx, setup)
-	if err != nil {
-		log.Fatalf("Error while connecting to primray %v", err)
-	}
-	//listen on the stream, might have to be changed
-	go func() {
-		for {
-			in, err := stream.Recv()
-			if err == io.EOF {
-				return
-			}
-			if err != nil {
-				log.Fatalf("Backup with id %v failed to recieve message", s.Id)
-			}
-			s.updateResponses(in)
-		}
-	}()
-}
-
-func (s *Server) updateResponses(response *a.UpdateResponse) {
-	s.responses[response.Key] = response.Value
 }
 
 func (s *Server) Bid(ctx context.Context, amount *a.Amount) (*a.Acknowledgement, error) {
