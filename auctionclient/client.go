@@ -47,6 +47,7 @@ func (c *Client) Hello() {
 
 //overvej om der skal returværdi på denne?
 func (c *Client) Bid(amount int32) {
+	c.front.uid++ //update the unique identifier
 	for i := range c.front.servers {
 		input := &a.Amount{Amount: amount, ClientId: c.Id}
 		ack, err := c.front.servers[i].Bid(c.front.ctx, input)
@@ -60,6 +61,7 @@ func (c *Client) Bid(amount int32) {
 }
 
 func (c *Client) Result() {
+	c.front.uid++ //update the unique identifier
 	for i := range c.front.servers {
 		outcome, err := c.front.servers[i].Result(c.front.ctx, &a.Empty{})
 		if err != nil {
