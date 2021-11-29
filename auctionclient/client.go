@@ -32,6 +32,17 @@ func main() {
 	log.Print("Client has managed to set up frontend, nice")
 	time.Sleep(5 * time.Second)
 	c.Hello()
+	c.Demo()
+}
+
+func (c *Client) Demo() {
+	c.Bid(500)
+	time.Sleep(2 * time.Second)
+	c.Result()
+	time.Sleep(2 * time.Second)
+	c.Bid(250)
+	time.Sleep(2 * time.Second)
+	c.Bid(900)
 }
 
 func (c *Client) Hello() {
