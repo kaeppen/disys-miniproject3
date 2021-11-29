@@ -36,13 +36,22 @@ func main() {
 }
 
 func (c *Client) Demo() {
-	c.Bid(500)
-	time.Sleep(2 * time.Second)
-	c.Result()
-	time.Sleep(2 * time.Second)
-	c.Bid(250)
-	time.Sleep(2 * time.Second)
-	c.Bid(900)
+	if c.Id == 1 {
+		c.Bid(500)
+		time.Sleep(2 * time.Second)
+		c.Result()
+		time.Sleep(2 * time.Second)
+		c.Bid(250)
+		time.Sleep(2 * time.Second)
+		c.Bid(900)
+	} else {
+		c.Bid(100)
+		time.Sleep(2 * time.Second)
+		c.Result()
+		time.Sleep(2 * time.Second)
+		c.Bid(1500)
+		time.Sleep(2 * time.Second)
+	}
 }
 
 func (c *Client) Hello() {

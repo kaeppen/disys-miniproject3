@@ -1,8 +1,8 @@
 version: "3"
 
 services: 
-    client-1: 
-        container_name: "client-1"
+    client-0: 
+        container_name: "client-0"
         #image: auctionator:latest
         build: 
             dockerfile: ./auctionclient/Dockerfile
@@ -12,6 +12,17 @@ services:
             - SERVER0=server-0:8080
             - SERVER1=server-1:8081
             - SERVER2=server-2:8082
+    client-1: 
+        container_name: "client-1"
+        #image: auctionator:latest
+        build: 
+            dockerfile: ./auctionclient/Dockerfile
+        environment: 
+            - ID=1
+            - NUMSERVERS=3
+            - SERVER0=server-0:8080
+            - SERVER1=server-1:8081
+            - SERVER2=server-2:8082    
     server-0: 
         container_name: "server-0"
         #image: auctionator:latest
