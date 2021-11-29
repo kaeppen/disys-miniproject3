@@ -31,7 +31,6 @@ func main() {
 	c.setupFrontend()
 	log.Print("Client has managed to set up frontend, nice")
 	time.Sleep(5 * time.Second)
-	//c.Hello()
 	c.Demo()
 }
 
@@ -52,17 +51,6 @@ func (c *Client) Demo() {
 		time.Sleep(2 * time.Second)
 		c.Bid(1500)
 		time.Sleep(2 * time.Second)
-	}
-}
-
-func (c *Client) Hello() {
-	for i := range c.front.servers {
-		_, err := c.front.servers[i].HelloWorld(c.front.ctx, &a.Empty{})
-		if err != nil {
-			//log.Print(err)
-			log.Printf("Error when attempting to reach server %v - removing", i)
-			delete(c.front.servers, i) //delete the server fom the map
-		}
 	}
 }
 
