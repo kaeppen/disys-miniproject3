@@ -65,6 +65,9 @@ func (s *Server) RunAuction() {
 	log.Printf("--------------------")
 	log.Printf("The winner is client: %v with a bid of %v", s.highestBid.ClientId, s.highestBid.Amount)
 	log.Printf("--------------------")
+	log.Printf("Shutting down")
+	time.Sleep(5 * time.Second)
+	os.Exit(0)
 }
 
 func (s *Server) setupServer() {
