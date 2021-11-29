@@ -38,7 +38,7 @@ func (c *Client) Hello() {
 	for i := range c.front.servers {
 		_, err := c.front.servers[i].HelloWorld(c.front.ctx, &a.Empty{})
 		if err != nil {
-			log.Fatal(err)
+			log.Print(err)
 			log.Printf("Error when attempting to reach server %v - removing", i)
 			delete(c.front.servers, i) //delete the server fom the map
 		}
@@ -52,7 +52,7 @@ func (c *Client) Bid(amount int32) {
 		input := &a.Amount{Amount: amount, ClientId: c.Id, Uid: c.front.uid}
 		ack, err := c.front.servers[i].Bid(c.front.ctx, input)
 		if err != nil {
-			log.Fatal(err)
+			log.Print(err)
 			log.Printf("Error when attempting to reach server %v - removing", i)
 			delete(c.front.servers, i) //delete the server fom the map
 		}
@@ -65,7 +65,7 @@ func (c *Client) Result() {
 	for i := range c.front.servers {
 		outcome, err := c.front.servers[i].Result(c.front.ctx, &a.Uid{Uid: c.front.uid})
 		if err != nil {
-			log.Fatal(err)
+			log.Print(err)
 			log.Printf("Error when attempting to reach server %v - removing", i)
 			delete(c.front.servers, i) //delete the server fom the map
 		}
