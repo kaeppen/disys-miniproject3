@@ -49,8 +49,8 @@ func (c *Client) Hello() {
 func (c *Client) Bid(amount int32) {
 	c.front.uid++ //update the unique identifier
 	for i := range c.front.servers {
-		input := &a.Amount{Amount: amount, ClientId: c.Id}
-		ack, err := c.front.servers[i].Bid(c.front.ctx, input, &a.Uid{Uid: c.front.uid})
+		input := &a.Amount{Amount: amount, ClientId: c.Id, Uid: c.front.uid}
+		ack, err := c.front.servers[i].Bid(c.front.ctx, input)
 		if err != nil {
 			log.Fatal(err)
 			log.Printf("Error when attempting to reach server %v - removing", i)
