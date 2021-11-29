@@ -7,6 +7,7 @@ import (
 	"net"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/kaeppen/disys-miniproject3/auctionator"
 	a "github.com/kaeppen/disys-miniproject3/auctionator"
@@ -40,17 +41,21 @@ func main() {
 	//set up the server
 	server.setupServer()
 
+	if server.Id == 1 {
+		go server.Kill()
+	}
+
 	//start listening
 	auctionator.RegisterAuctionatorServer(grpcServer, &server)
 	if err := grpcServer.Serve(listen); err != nil {
 		log.Fatalf("Failed to serve %v", err)
 	}
+}
 
-	if server.Id == 1 {
-		log.Printf("server %v lukker nu", server.Id)
-		os.Exit(0)
-	}
-
+func (s *Server) Kill() {
+	time.Sleep(2 * time.Second)
+	log.Printf("server %v lukker nu", s.Id)
+	os.Exit(0)
 }
 
 func (s *Server) setupServer() {
