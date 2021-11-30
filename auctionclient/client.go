@@ -83,9 +83,9 @@ func (c *Client) Result() {
 			delete(c.front.servers, i) //delete the server fom the map
 		} else {
 			if outcome.Over {
-				log.Printf("The auction is over. The winning bid was: %v", outcome.Result)
+				log.Printf("Client %v called Result(): The auction is over. The winning bid was: %v", c.Id, outcome.Result)
 			} else {
-				log.Printf("The auction is still running. The highest bid is currently: %v", outcome.Result)
+				log.Printf("Client %v called Result(): The auction is still running. The highest bid is currently: %v", c.Id, outcome.Result)
 			}
 		}
 	}
