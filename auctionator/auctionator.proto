@@ -10,11 +10,11 @@ service auctionator {
 message Amount {
     int32 Amount = 1; 
     int32 ClientId = 2;
-    int32 Timestamp = 3;  
+    string Timestamp = 3;  
 }
 
 message Timestamp {
-    int32 Timestamp = 1;
+    string Timestamp = 1;
 }
 
 message Acknowledgement {

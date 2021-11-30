@@ -55,8 +55,9 @@ func (c *Client) Demo() {
 
 func (c *Client) Bid(amount int32) {
 	c.front.timestamp++ //update the unique identifier
+	timestamp := fmt.Sprintf("%v.%v", c.Id, c.front.timestamp)
 	for i := range c.front.servers {
-		input := &a.Amount{Amount: amount, ClientId: c.Id, Timestamp: c.front.timestamp}
+		input := &a.Amount{Amount: amount, ClientId: c.Id, Timestamp: timestamp}
 		ack, err := c.front.servers[i].Bid(c.front.ctx, input)
 		if err != nil {
 			//log.Print(err)
@@ -73,8 +74,9 @@ func (c *Client) Bid(amount int32) {
 
 func (c *Client) Result() {
 	c.front.timestamp++ //update the unique identifier
+	timestamp := fmt.Sprintf("%v.%v", c.Id, c.front.timestamp)
 	for i := range c.front.servers {
-		outcome, err := c.front.servers[i].Result(c.front.ctx, &a.Timestamp{Timestamp: c.front.timestamp})
+		outcome, err := c.front.servers[i].Result(c.front.ctx, &a.Timestamp{Timestamp: timestamp})
 		if err != nil {
 			//log.Print(err)
 			log.Printf("Error when attempting to reach server %v - removing", i)

@@ -18,11 +18,11 @@ import (
 type Server struct {
 	a.UnimplementedAuctionatorServer
 	Id         int32
-	clients    map[int32]bool //the registered clients - only known by id (bad?) -> can be something else than a map?
+	clients    map[int32]bool //the registered clients
 	highestBid Bid
 	isOver     bool
 	result     int32
-	responses  map[int32]string //hvordan skal en server huske hvad den har svaret + husk at bid/result skal lægge response herind
+	responses  map[string]string
 }
 
 type Bid struct {
@@ -77,7 +77,7 @@ func (s *Server) setupServer() {
 	//set the servers id from environment variable
 	id, _ := strconv.Atoi(os.Getenv("ID"))
 	s.Id = int32(id)
-	s.responses = make(map[int32]string)
+	s.responses = make(map[string]string)
 	s.clients = make(map[int32]bool)
 }
 
