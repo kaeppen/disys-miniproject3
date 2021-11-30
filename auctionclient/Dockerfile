@@ -12,7 +12,6 @@ COPY *.go ./
 RUN cd /app && git clone https://github.com/kaeppen/disys-miniproject3.git
 RUN cd /app/disys-miniproject3/auctionclient && go build -o main . 
 
-ENV PORT $port #er det  overhovedet nødvendigt? 
 
 
 CMD ["/app/disys-miniproject3/auctionclient/main"]
