@@ -13,10 +13,9 @@ import (
 )
 
 type Frontend struct {
-	//det er mig der er grpc klient
-	ctx     context.Context
-	uid     int32 //unique identifier, needs to be incorporated in requests!
-	servers map[int]a.AuctionatorClient
+	ctx       context.Context
+	timestamp int32
+	servers   map[int]a.AuctionatorClient
 }
 
 type Client struct {
@@ -55,9 +54,9 @@ func (c *Client) Demo() {
 }
 
 func (c *Client) Bid(amount int32) {
-	c.front.uid++ //update the unique identifier
+	c.front.timestamp++ //update the unique identifier
 	for i := range c.front.servers {
-		input := &a.Amount{Amount: amount, ClientId: c.Id, Uid: c.front.uid}
+		input := &a.Amount{Amount: amount, ClientId: c.Id, Timestamp: c.front.timestamp}
 		ack, err := c.front.servers[i].Bid(c.front.ctx, input)
 		if err != nil {
 			//log.Print(err)
@@ -70,9 +69,9 @@ func (c *Client) Bid(amount int32) {
 }
 
 func (c *Client) Result() {
-	c.front.uid++ //update the unique identifier
+	c.front.timestamp++ //update the unique identifier
 	for i := range c.front.servers {
-		outcome, err := c.front.servers[i].Result(c.front.ctx, &a.Uid{Uid: c.front.uid})
+		outcome, err := c.front.servers[i].Result(c.front.ctx, &a.Timestamp{Timestamp: c.front.timestamp})
 		if err != nil {
 			//log.Print(err)
 			log.Printf("Error when attempting to reach server %v - removing", i)

@@ -103,12 +103,12 @@ func (s *Server) Bid(ctx context.Context, amount *a.Amount) (*a.Acknowledgement,
 	//what about exception case? (as noted in the requirements)
 
 	//store the response
-	s.responses[amount.Uid] = ack.Ack
+	s.responses[amount.Timestamp] = ack.Ack
 
 	return ack, nil
 }
 
-func (s *Server) Result(ctx context.Context, uid *a.Uid) (*a.Outcome, error) {
+func (s *Server) Result(ctx context.Context, timestamp *a.Timestamp) (*a.Outcome, error) {
 	var outcome = &a.Outcome{}
 	if s.isOver {
 		outcome.Over = true
@@ -119,7 +119,7 @@ func (s *Server) Result(ctx context.Context, uid *a.Uid) (*a.Outcome, error) {
 	}
 
 	//store the response
-	s.responses[uid.Uid] = fmt.Sprintf("%v %v", outcome.Over, outcome.Result)
+	s.responses[timestamp.Timestamp] = fmt.Sprintf("%v %v", outcome.Over, outcome.Result)
 
 	return outcome, nil
 }

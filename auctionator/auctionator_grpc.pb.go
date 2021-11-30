@@ -19,7 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuctionatorClient interface {
 	Bid(ctx context.Context, in *Amount, opts ...grpc.CallOption) (*Acknowledgement, error)
-	Result(ctx context.Context, in *Uid, opts ...grpc.CallOption) (*Outcome, error)
+	Result(ctx context.Context, in *Timestamp, opts ...grpc.CallOption) (*Outcome, error)
 }
 
 type auctionatorClient struct {
@@ -39,7 +39,7 @@ func (c *auctionatorClient) Bid(ctx context.Context, in *Amount, opts ...grpc.Ca
 	return out, nil
 }
 
-func (c *auctionatorClient) Result(ctx context.Context, in *Uid, opts ...grpc.CallOption) (*Outcome, error) {
+func (c *auctionatorClient) Result(ctx context.Context, in *Timestamp, opts ...grpc.CallOption) (*Outcome, error) {
 	out := new(Outcome)
 	err := c.cc.Invoke(ctx, "/auctionator.auctionator/Result", in, out, opts...)
 	if err != nil {
@@ -53,7 +53,7 @@ func (c *auctionatorClient) Result(ctx context.Context, in *Uid, opts ...grpc.Ca
 // for forward compatibility
 type AuctionatorServer interface {
 	Bid(context.Context, *Amount) (*Acknowledgement, error)
-	Result(context.Context, *Uid) (*Outcome, error)
+	Result(context.Context, *Timestamp) (*Outcome, error)
 	mustEmbedUnimplementedAuctionatorServer()
 }
 
@@ -64,7 +64,7 @@ type UnimplementedAuctionatorServer struct {
 func (UnimplementedAuctionatorServer) Bid(context.Context, *Amount) (*Acknowledgement, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Bid not implemented")
 }
-func (UnimplementedAuctionatorServer) Result(context.Context, *Uid) (*Outcome, error) {
+func (UnimplementedAuctionatorServer) Result(context.Context, *Timestamp) (*Outcome, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Result not implemented")
 }
 func (UnimplementedAuctionatorServer) mustEmbedUnimplementedAuctionatorServer() {}
@@ -99,7 +99,7 @@ func _Auctionator_Bid_Handler(srv interface{}, ctx context.Context, dec func(int
 }
 
 func _Auctionator_Result_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Uid)
+	in := new(Timestamp)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -111,7 +111,7 @@ func _Auctionator_Result_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/auctionator.auctionator/Result",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuctionatorServer).Result(ctx, req.(*Uid))
+		return srv.(AuctionatorServer).Result(ctx, req.(*Timestamp))
 	}
 	return interceptor(ctx, in, info, handler)
 }
