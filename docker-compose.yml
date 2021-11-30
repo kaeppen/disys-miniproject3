@@ -3,7 +3,6 @@ version: "3"
 services: 
     client-0: 
         container_name: "client-0"
-        #image: auctionator:latest
         build: 
             dockerfile: ./auctionclient/Dockerfile
         environment: 
@@ -14,7 +13,6 @@ services:
             - SERVER2=server-2:8082
     client-1: 
         container_name: "client-1"
-        #image: auctionator:latest
         build: 
             dockerfile: ./auctionclient/Dockerfile
         environment: 
@@ -25,7 +23,6 @@ services:
             - SERVER2=server-2:8082    
     server-0: 
         container_name: "server-0"
-        #image: auctionator:latest
         build: 
             dockerfile: ./auctionserver/Dockerfile    
         environment: 
@@ -33,7 +30,6 @@ services:
             - ID=0  
     server-1: 
         container_name: "server-1"
-        #image: auctionator:latest
         build: 
             dockerfile: ./auctionserver/Dockerfile    
         environment: 
@@ -41,7 +37,6 @@ services:
             - ID=1  
     server-2: 
         container_name: "server-2"
-        #image: auctionator:latest
         build: 
             dockerfile: ./auctionserver/Dockerfile    
         environment: 
