@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"math/rand"
 	"net"
 	"os"
 	"strconv"
@@ -54,8 +55,9 @@ func main() {
 }
 
 func (s *Server) Kill() {
-	time.Sleep(2 * time.Second)
-	log.Printf("server %v lukker nu", s.Id)
+	var random = rand.Intn(8) + 2
+	time.Sleep(time.Duration(random) * time.Second)
+	log.Printf("Server %v shutting down", s.Id)
 	os.Exit(0)
 }
 
@@ -79,17 +81,11 @@ func (s *Server) setupServer() {
 	s.clients = make(map[int32]bool)
 }
 
-func (s *Server) HelloWorld(context.Context, *a.Empty) (*a.Empty, error) {
-	log.Printf("Helloworld kaldt på server %v", s.Id)
-
-	return &a.Empty{}, nil
-}
-
 func (s *Server) Bid(ctx context.Context, amount *a.Amount) (*a.Acknowledgement, error) {
 	var client = amount.ClientId
 	_, ok := s.clients[client]
 	if !ok {
-		s.clients[client] = true //stream or port/ip instead? maybe reference to a client-struct? find inspiration somewhere
+		s.clients[client] = true
 	}
 
 	var ack = &a.Acknowledgement{}
@@ -100,7 +96,7 @@ func (s *Server) Bid(ctx context.Context, amount *a.Amount) (*a.Acknowledgement,
 	} else {
 		ack.Ack = "Fail"
 	}
-	//what about exception case? (as noted in the requirements)
+	//what about exception case? (as noted in the requirements) -> doesn't matter according to TA's.
 
 	//store the response
 	s.responses[amount.Timestamp] = ack.Ack

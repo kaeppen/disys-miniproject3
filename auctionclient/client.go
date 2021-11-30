@@ -63,7 +63,10 @@ func (c *Client) Bid(amount int32) {
 			log.Printf("Error when attempting to reach server %v - removing", i)
 			delete(c.front.servers, i) //delete the server fom the map
 		} else {
-			log.Printf("Client %v got response %v from server %v", c.Id, ack.Ack, i)
+			log.Printf("Client %v got response %v from server %v when bidding", c.Id, ack.Ack, i)
+			if ack.Ack == "Fail" {
+				log.Print("Bid failed because offer was too low")
+			}
 		}
 	}
 }
