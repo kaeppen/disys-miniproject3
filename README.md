@@ -5,4 +5,4 @@
 2. cd in to the main directory of the repo 
 3. Run the command "docker-compose build --no-cache" 
 4. Run the command "docker-compose up" 
-5. Follow the instructions in the terminal 
+5. Watch the program do a demo in the terminal
