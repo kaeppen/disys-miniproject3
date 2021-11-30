@@ -29,7 +29,6 @@ func main() {
 	c := Client{}
 	id, _ := strconv.Atoi(os.Getenv("ID"))
 	c.Id = int32(id)
-	time.Sleep(5 * time.Second)
 	c.setupFrontend()
 	log.Print("Client has managed to set up frontend, nice")
 	time.Sleep(5 * time.Second)
