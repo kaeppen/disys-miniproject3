@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"context"
 	"fmt"
 	"log"
@@ -32,19 +31,7 @@ func main() {
 	c.setupFrontend()
 	log.Print("Client has managed to set up frontend, nice")
 	time.Sleep(5 * time.Second)
-	//c.Demo()
-	scanner := bufio.NewScanner(os.Stdin)
-	for {
-		for scanner.Scan() {
-			if scanner.Text() == "Bid" {
-				bidAmount, _ := strconv.Atoi(scanner.Text())
-				c.Bid(int32(bidAmount))
-
-			} else if scanner.Text() == "Result" {
-				c.Result()
-			}
-		}
-	}
+	c.Demo()
 }
 
 func (c *Client) Demo() {
