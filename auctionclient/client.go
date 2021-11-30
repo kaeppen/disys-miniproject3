@@ -32,7 +32,7 @@ func main() {
 	c.setupFrontend()
 	log.Print("Client has managed to set up frontend, nice")
 	time.Sleep(5 * time.Second)
-	c.Demo()
+	//c.Demo()
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		for scanner.Scan() {
